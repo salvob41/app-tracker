@@ -1,0 +1,24 @@
+{
+    "name": "app-tracker-frontend",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "dependencies": {
+        "@nuxt/icon": "^1.0.0",
+        "@nuxt/ui": "^2.14.0",
+        "nuxt": "^3.10.0",
+        "vue": "^3.4.15",
+        "vue-router": "^4.2.5"
+    },
+    "devDependencies": {
+        "@nuxtjs/tailwindcss": "^6.11.4",
+        "vue-draggable-plus": "^0.3.5"
+    }
+}
