@@ -62,9 +62,9 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  updateStage: [id: number, toStage: string, fromStage: string]
+  updateStage: [id: number | string, toStage: string, fromStage: string]
   edit: [application: Application]
-  delete: [id: number]
+  delete: [id: number | string]
   click: [application: Application]
 }>()
 
@@ -121,9 +121,9 @@ const DRAG_DATA_KEY = 'application-tracker/app-id'
 const onNativeDrop = (e: DragEvent, stageKey: string) => {
   const idStr = e.dataTransfer?.getData(DRAG_DATA_KEY)
   if (!idStr) return
-  const id = parseInt(idStr, 10)
-  if (isNaN(id)) return
-  const app = props.applications.find(a => a.id === id)
+  const id = idStr
+  if (!id) return
+  const app = props.applications.find(a => String(a.id) === id)
   if (app && app.stage !== stageKey) {
     emit('updateStage', id, stageKey, app.stage)
   }
@@ -144,7 +144,7 @@ const handleEdit = (app: Application) => {
   emit('edit', app)
 }
 
-const handleDelete = (id: number) => {
+const handleDelete = (id: number | string) => {
   emit('delete', id)
 }
 

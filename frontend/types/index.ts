@@ -1,5 +1,5 @@
 export interface Application {
-    id: number
+    id: number | string
     company: string
     stage: string
     notes?: string
@@ -9,8 +9,8 @@ export interface Application {
 }
 
 export interface InfoItem {
-    id: number
-    application_id: number
+    id: number | string
+    application_id: number | string
     tag?: string | null
     content?: string | null
     event_type?: 'transition' | 'comment' | null
@@ -25,7 +25,7 @@ export interface ApplicationWithInfoItems extends Application {
 }
 
 export interface Stage {
-    id: number
+    id: number | string
     key: string
     label: string
     color: string

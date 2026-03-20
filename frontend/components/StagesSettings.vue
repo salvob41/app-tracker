@@ -68,8 +68,8 @@
         </div>
 
         <!-- Add New Stage -->
-        <UButton 
-          icon="i-heroicons-plus" 
+        <UButton
+          icon="i-heroicons-plus"
           variant="outline"
           block
           @click="addNewStage"
@@ -77,6 +77,12 @@
         >
           Add Column
         </UButton>
+
+        <!-- Import/Export (local mode only) -->
+        <template v-if="storageMode === 'local'">
+          <UDivider class="my-2" />
+          <ImportExport />
+        </template>
       </div>
 
       <template #footer>
@@ -90,6 +96,9 @@
 
 <script setup lang="ts">
 import type { Stage } from '~/types'
+
+const config = useRuntimeConfig()
+const storageMode = config.public.storageMode
 
 const props = defineProps<{
   modelValue: boolean

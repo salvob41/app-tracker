@@ -8,7 +8,9 @@
         "dev": "nuxt dev",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
-        "postinstall": "nuxt prepare"
+        "postinstall": "nuxt prepare",
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
     "dependencies": {
         "@nuxt/icon": "^1.0.0",
@@ -19,6 +21,9 @@
     },
     "devDependencies": {
         "@nuxtjs/tailwindcss": "^6.11.4",
+        "@vitest/ui": "^4.1.0",
+        "jsdom": "^29.0.0",
+        "vitest": "^4.1.0",
         "vue-draggable-plus": "^0.3.5"
     }
 }

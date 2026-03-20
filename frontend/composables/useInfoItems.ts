@@ -1,41 +1,32 @@
 import type { InfoItem, InfoItemCreate, InfoItemUpdate } from '~/types'
 
 export const useInfoItems = () => {
-    const config = useRuntimeConfig()
-    const apiBase = config.public.apiBase
+    const adapter = useStorage()
 
-    const getInfoItems = async (applicationId: number): Promise<InfoItem[]> => {
-        return await $fetch<InfoItem[]>(`${apiBase}/applications/${applicationId}/info-items/`)
+    const getInfoItems = async (applicationId: number | string): Promise<InfoItem[]> => {
+        return adapter.getInfoItems(applicationId)
     }
 
-    const createInfoItem = async (applicationId: number, item: InfoItemCreate): Promise<InfoItem> => {
-        return await $fetch<InfoItem>(`${apiBase}/applications/${applicationId}/info-items/`, {
-            method: 'POST',
-            body: item
-        })
+    const createInfoItem = async (applicationId: number | string, item: InfoItemCreate): Promise<InfoItem> => {
+        return adapter.createInfoItem(applicationId, item)
     }
 
     const updateInfoItem = async (
-        applicationId: number,
-        itemId: number,
+        applicationId: number | string,
+        itemId: number | string,
         item: InfoItemUpdate
     ): Promise<InfoItem> => {
-        return await $fetch<InfoItem>(`${apiBase}/applications/${applicationId}/info-items/${itemId}`, {
-            method: 'PUT',
-            body: item
-        })
+        return adapter.updateInfoItem(applicationId, itemId, item)
     }
 
-    const deleteInfoItem = async (applicationId: number, itemId: number): Promise<void> => {
-        await $fetch(`${apiBase}/applications/${applicationId}/info-items/${itemId}`, {
-            method: 'DELETE'
-        })
+    const deleteInfoItem = async (applicationId: number | string, itemId: number | string): Promise<void> => {
+        return adapter.deleteInfoItem(applicationId, itemId)
     }
 
     return {
         getInfoItems,
         createInfoItem,
         updateInfoItem,
-        deleteInfoItem
+        deleteInfoItem,
     }
 }

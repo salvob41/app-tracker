@@ -1,35 +1,26 @@
-import type { Application, ApplicationCreate, ApplicationUpdate } from '~/types'
+import type { Application, ApplicationWithInfoItems, ApplicationCreate, ApplicationUpdate } from '~/types'
 
 export const useApplications = () => {
-    const config = useRuntimeConfig()
-    const apiBase = config.public.apiBase
+    const adapter = useStorage()
 
     const getApplications = async (): Promise<Application[]> => {
-        return await $fetch<Application[]>(`${apiBase}/applications`)
+        return adapter.getApplications()
     }
 
-    const getApplication = async (id: number): Promise<Application> => {
-        return await $fetch<Application>(`${apiBase}/applications/${id}`)
+    const getApplication = async (id: number | string): Promise<ApplicationWithInfoItems> => {
+        return adapter.getApplication(id)
     }
 
     const createApplication = async (application: ApplicationCreate): Promise<Application> => {
-        return await $fetch<Application>(`${apiBase}/applications`, {
-            method: 'POST',
-            body: application
-        })
+        return adapter.createApplication(application)
     }
 
-    const updateApplication = async (id: number, application: ApplicationUpdate): Promise<Application> => {
-        return await $fetch<Application>(`${apiBase}/applications/${id}`, {
-            method: 'PUT',
-            body: application
-        })
+    const updateApplication = async (id: number | string, application: ApplicationUpdate): Promise<Application> => {
+        return adapter.updateApplication(id, application)
     }
 
-    const deleteApplication = async (id: number): Promise<void> => {
-        await $fetch(`${apiBase}/applications/${id}`, {
-            method: 'DELETE'
-        })
+    const deleteApplication = async (id: number | string): Promise<void> => {
+        return adapter.deleteApplication(id)
     }
 
     return {
@@ -37,6 +28,6 @@ export const useApplications = () => {
         getApplication,
         createApplication,
         updateApplication,
-        deleteApplication
+        deleteApplication,
     }
 }

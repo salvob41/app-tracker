@@ -1,44 +1,30 @@
 import type { Stage } from '~/types'
 
 export const useStages = () => {
-    const config = useRuntimeConfig()
-    const apiBase = config.public.apiBase
-
+    const adapter = useStorage()
     const stages = useState<Stage[]>('stages', () => [])
-
-    const fetchStages = async () => {
-        return await $fetch<Stage[]>(`${apiBase}/stages`)
-    }
 
     const loadStages = async () => {
         try {
-            stages.value = await fetchStages()
+            stages.value = await adapter.getStages()
         } catch (error) {
             console.error('Failed to load stages:', error)
         }
     }
 
     const addStage = async (stage: Omit<Stage, 'id'>) => {
-        await $fetch<Stage>(`${apiBase}/stages`, {
-            method: 'POST',
-            body: stage
-        })
-        await loadStages()
+        const newStage = await adapter.addStage(stage)
+        stages.value = [...stages.value, newStage]
     }
 
-    const updateStage = async (id: number, stage: Partial<Stage>) => {
-        await $fetch<Stage>(`${apiBase}/stages/${id}`, {
-            method: 'PATCH',
-            body: stage
-        })
-        await loadStages()
+    const updateStage = async (id: number | string, stage: Partial<Stage>) => {
+        const updated = await adapter.updateStage(id, stage)
+        stages.value = stages.value.map(s => String(s.id) === String(id) ? updated : s)
     }
 
-    const deleteStage = async (id: number) => {
-        await $fetch(`${apiBase}/stages/${id}`, {
-            method: 'DELETE'
-        })
-        await loadStages()
+    const deleteStage = async (id: number | string) => {
+        await adapter.deleteStage(id)
+        stages.value = stages.value.filter(s => String(s.id) !== String(id))
     }
 
     return {
@@ -46,6 +32,6 @@ export const useStages = () => {
         loadStages,
         addStage,
         updateStage,
-        deleteStage
+        deleteStage,
     }
 }

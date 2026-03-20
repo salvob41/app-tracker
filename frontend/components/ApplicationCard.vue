@@ -81,7 +81,7 @@ const onDragStart = (e: DragEvent) => {
 
 defineEmits<{
   edit: [application: Application]
-  delete: [id: number]
+  delete: [id: number | string]
   click: [application: Application]
 }>()
 

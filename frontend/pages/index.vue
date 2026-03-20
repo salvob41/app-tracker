@@ -119,13 +119,13 @@ const showStagesSettings = ref(false)
 
 const showCommentModal = ref(false)
 const pendingTransition = ref<{
-  appId: number
+  appId: number | string
   fromStage: string
   toStage: string
-  eventItemId: number | null
+  eventItemId: number | string | null
 } | null>(null)
 /** Block detail modal for this app while transition+comment flow is in progress */
-const blockDetailForAppId = ref<number | null>(null)
+const blockDetailForAppId = ref<number | string | null>(null)
 
 // Delete Modal State
 const showDeleteModal = ref(false)
@@ -189,7 +189,7 @@ const handleSubmit = async (data: ApplicationCreate) => {
   }
 }
 
-const handleUpdateStage = async (id: number, toStage: string, fromStage: string) => {
+const handleUpdateStage = async (id: number | string, toStage: string, fromStage: string) => {
   blockDetailForAppId.value = id
   const index = applications.value.findIndex(a => a.id === id)
   if (index !== -1) {
@@ -242,7 +242,7 @@ const handleCommentSkip = () => {
   blockDetailForAppId.value = null
 }
 
-const handleDelete = (id: number) => {
+const handleDelete = (id: number | string) => {
   const app = applications.value.find(a => a.id === id)
   if (app) {
     appToDelete.value = app
