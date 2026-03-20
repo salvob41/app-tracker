@@ -70,7 +70,7 @@ export const localStorageAdapter: StorageAdapter = {
             ? `${lastActivity.from_stage} → ${lastActivity.to_stage}`
             : lastActivity.content || null
           : null,
-        last_comment_preview: lastComment?.content || null,
+        last_comment_preview: lastActivity?.content || null,
       }
     })
   },

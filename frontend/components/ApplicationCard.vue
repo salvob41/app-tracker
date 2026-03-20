@@ -45,7 +45,7 @@
           <UIcon name="i-heroicons-bolt" class="notes-icon" />
           <p class="notes-text">{{ application.last_event_preview }}</p>
         </div>
-        <div v-if="application.last_comment_preview" class="notes">
+        <div v-if="application.last_comment_preview && application.last_comment_preview !== application.last_event_preview" class="notes">
           <UIcon name="i-heroicons-chat-bubble-left-ellipsis" class="notes-icon" />
           <p class="notes-text">{{ application.last_comment_preview }}</p>
         </div>
