@@ -1,5 +1,10 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <!-- Backup Reminder Banner (local storage mode only) -->
+    <ClientOnly v-if="isLocalStorageMode">
+      <BackupReminder @export="handleQuickExport" />
+    </ClientOnly>
+
     <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex justify-between items-center">
@@ -15,6 +20,15 @@
             >
               New Application
             </UButton>
+            <!-- Export button (local storage mode only) -->
+            <UTooltip v-if="isLocalStorageMode" text="Export backup">
+              <UButton
+                icon="i-heroicons-arrow-down-tray"
+                color="gray"
+                variant="ghost"
+                @click="handleQuickExport"
+              />
+            </UTooltip>
             <UButton
               icon="i-heroicons-cog-6-tooth"
               color="gray"
@@ -91,14 +105,24 @@
       @save="handleCommentSave"
       @skip="handleCommentSkip"
     />
+
+    <!-- First Visit Notice (local storage mode only) -->
+    <ClientOnly v-if="isLocalStorageMode">
+      <FirstVisitNotice />
+    </ClientOnly>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Application, ApplicationCreate, InfoItemCreate } from '~/types'
 
+const config = useRuntimeConfig()
+const isLocalStorageMode = config.public.storageMode === 'local'
+
 const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
+const toast = useToast()
+const { recordBackup, recordChange } = useBackup()
 
 const toggleDark = () => {
   colorMode.preference = isDark.value ? 'light' : 'dark'
@@ -183,6 +207,9 @@ const handleSubmit = async (data: ApplicationCreate) => {
     }
     showModal.value = false
     await loadApplications(false) // Refresh in background
+    
+    // Record change for backup tracking
+    if (isLocalStorageMode) recordChange()
   } catch (e) {
     console.error('Failed to save application:', e)
     await loadApplications() // Revert to server state on error
@@ -213,6 +240,9 @@ const handleUpdateStage = async (id: number | string, toStage: string, fromStage
       eventItemId: created.id,
     }
     showCommentModal.value = true
+    
+    // Record change for backup tracking
+    if (isLocalStorageMode) recordChange()
   } catch (e) {
     blockDetailForAppId.value = null
     console.error('Failed to update stage:', e)
@@ -265,6 +295,9 @@ const handleConfirmDelete = async () => {
 
     await deleteApplication(id)
     showDeleteModal.value = false
+    
+    // Record change for backup tracking
+    if (isLocalStorageMode) recordChange()
   } catch (e) {
     console.error('Failed to delete application:', e)
     await loadApplications() // Revert on error
@@ -272,6 +305,35 @@ const handleConfirmDelete = async () => {
     deleteLoading.value = false
     appToDelete.value = null
   }
+}
+
+// Quick export from header button
+const handleQuickExport = () => {
+  const KEYS = {
+    applications: 'app-tracker:applications',
+    stages: 'app-tracker:stages',
+    infoItems: 'app-tracker:info-items',
+  }
+
+  const data = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    applications: JSON.parse(localStorage.getItem(KEYS.applications) || '[]'),
+    stages: JSON.parse(localStorage.getItem(KEYS.stages) || '[]'),
+    infoItems: JSON.parse(localStorage.getItem(KEYS.infoItems) || '[]'),
+  }
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const date = new Date().toISOString().split('T')[0]
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `app-tracker-export-${date}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+
+  recordBackup()
+  toast.add({ title: 'Data exported successfully', color: 'green', icon: 'i-heroicons-check-circle' })
 }
 
 onMounted(() => {
