@@ -6,6 +6,7 @@ export interface Application {
     created_at: string
     updated_at?: string
     last_event_preview?: string | null
+    last_comment_preview?: string | null
 }
 
 export interface InfoItem {

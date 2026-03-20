@@ -42,16 +42,16 @@
 
       <div class="card-body">
         <div v-if="application.last_event_preview" class="notes">
-          <UIcon name="i-heroicons-chat-bubble-left-ellipsis" class="notes-icon" />
+          <UIcon name="i-heroicons-bolt" class="notes-icon" />
           <p class="notes-text">{{ application.last_event_preview }}</p>
         </div>
-        <div v-else-if="application.notes" class="notes">
-          <UIcon name="i-heroicons-document-text" class="notes-icon" />
-          <p class="notes-text">{{ application.notes }}</p>
+        <div v-if="application.last_comment_preview" class="notes">
+          <UIcon name="i-heroicons-chat-bubble-left-ellipsis" class="notes-icon" />
+          <p class="notes-text">{{ application.last_comment_preview }}</p>
         </div>
-        <div v-else class="notes-empty">
-          <UIcon name="i-heroicons-document-text" class="notes-icon" />
-          <p class="notes-text">No notes added</p>
+        <div v-if="!application.last_event_preview && !application.last_comment_preview" class="notes-empty">
+          <UIcon name="i-heroicons-clock" class="notes-icon" />
+          <p class="notes-text">No activity yet</p>
         </div>
       </div>
 

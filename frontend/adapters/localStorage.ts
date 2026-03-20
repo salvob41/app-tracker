@@ -55,7 +55,24 @@ function seedStagesIfEmpty(): Stage[] {
 export const localStorageAdapter: StorageAdapter = {
   // Applications
   async getApplications(): Promise<Application[]> {
-    return read<Application>(KEYS.applications)
+    const apps = read<Application>(KEYS.applications)
+    const allItems = read<InfoItem>(KEYS.infoItems)
+    return apps.map(app => {
+      const items = allItems
+        .filter(i => String(i.application_id) === String(app.id))
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      const lastActivity = items[0]
+      const lastComment = items.find(i => i.event_type === 'comment')
+      return {
+        ...app,
+        last_event_preview: lastActivity
+          ? lastActivity.event_type === 'transition'
+            ? `${lastActivity.from_stage} → ${lastActivity.to_stage}`
+            : lastActivity.content || null
+          : null,
+        last_comment_preview: lastComment?.content || null,
+      }
+    })
   },
 
   async getApplication(id: number | string): Promise<ApplicationWithInfoItems> {
