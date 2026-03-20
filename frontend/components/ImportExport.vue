@@ -1,35 +1,53 @@
 <template>
-  <div class="space-y-3">
+  <div class="space-y-4">
     <div class="flex items-center justify-between">
-      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Data Backup</h3>
+      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Backup & Restore</h3>
       <span class="text-xs text-gray-500 dark:text-gray-400">
         Last backup: {{ lastBackupFormatted }}
       </span>
     </div>
-    
-    <p class="text-xs text-gray-500 dark:text-gray-400">
-      Your data is stored locally in your browser. Export regularly to keep a backup.
+
+    <div class="space-y-3">
+      <!-- Download Backup -->
+      <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <UIcon name="i-heroicons-arrow-down-tray" class="text-lg text-gray-500 mt-0.5" />
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Download Backup</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Save your data as a file to your computer</p>
+        </div>
+        <UButton
+          color="primary"
+          variant="soft"
+          size="sm"
+          @click="handleExport"
+        >
+          Download
+        </UButton>
+      </div>
+
+      <!-- Restore from Backup -->
+      <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <UIcon name="i-heroicons-arrow-up-tray" class="text-lg text-gray-500 mt-0.5" />
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Restore from Backup</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Load data from a previously saved file</p>
+        </div>
+        <UButton
+          color="gray"
+          variant="soft"
+          size="sm"
+          @click="triggerImport"
+          :loading="importing"
+        >
+          Browse...
+        </UButton>
+      </div>
+    </div>
+
+    <p class="text-xs text-gray-400 dark:text-gray-500 italic">
+      Your data is stored in this browser only. Download a backup to keep your data safe or transfer to another device.
     </p>
 
-    <div class="flex gap-2">
-      <UButton
-        icon="i-heroicons-arrow-down-tray"
-        variant="outline"
-        size="sm"
-        @click="handleExport"
-      >
-        Export JSON
-      </UButton>
-      <UButton
-        icon="i-heroicons-arrow-up-tray"
-        variant="outline"
-        size="sm"
-        @click="triggerImport"
-        :loading="importing"
-      >
-        Import JSON
-      </UButton>
-    </div>
     <input
       ref="fileInput"
       type="file"

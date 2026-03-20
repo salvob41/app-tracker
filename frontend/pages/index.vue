@@ -6,7 +6,7 @@
     </ClientOnly>
 
     <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
             <UIcon name="i-heroicons-briefcase" class="text-3xl text-primary" />
@@ -20,14 +20,16 @@
             >
               New Application
             </UButton>
-            <!-- Export button (local storage mode only) -->
-            <UTooltip v-if="isLocalStorageMode" text="Export backup">
+            <!-- Backup button (local storage mode only) -->
+            <UTooltip v-if="isLocalStorageMode" text="Download Backup">
               <UButton
                 icon="i-heroicons-arrow-down-tray"
                 color="gray"
                 variant="ghost"
                 @click="handleQuickExport"
-              />
+              >
+                <span class="hidden lg:inline ml-1">Backup</span>
+              </UButton>
             </UTooltip>
             <UButton
               icon="i-heroicons-cog-6-tooth"
