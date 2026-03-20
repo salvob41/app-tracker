@@ -62,7 +62,6 @@ export const localStorageAdapter: StorageAdapter = {
         .filter(i => String(i.application_id) === String(app.id))
         .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       const lastActivity = items[0]
-      const lastComment = items.find(i => i.event_type === 'comment')
       return {
         ...app,
         last_event_preview: lastActivity
